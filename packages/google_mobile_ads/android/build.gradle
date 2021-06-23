@@ -36,6 +36,7 @@ android {
       testImplementation 'junit:junit:4.12'
       testImplementation 'org.hamcrest:hamcrest:2.2'
       testImplementation 'org.mockito:mockito-inline:3.9.0'
+      debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
     }
 }
 

@@ -80,6 +80,12 @@ class AdInstanceManager {
       return;
     }
     FlutterAd ad = ads.get(adId);
+    if (AppWatcher.INSTANCE.isInstalled()) {
+      AppWatcher.INSTANCE.getObjectWatcher().expectWeaklyReachable(
+          ad,
+          "Ad retained: " + ad.getClass().getName() + ": " + adId
+      );
+    }
     if (ad != null) {
       ad.dispose();
     }
