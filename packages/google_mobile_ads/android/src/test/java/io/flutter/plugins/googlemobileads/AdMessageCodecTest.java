@@ -18,10 +18,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import android.content.Context;
 import com.google.android.gms.ads.AdSize;
+import io.flutter.plugins.googlemobileads.FlutterAdSize.AdSizeFactory;
+import io.flutter.plugins.googlemobileads.FlutterAdSize.AdaptiveInlineBannerAdSize;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -234,5 +240,28 @@ public class AdMessageCodecTest {
     assertNull(result.clickToExpandRequested);
     assertNull(result.customControlsRequested);
     assertNull(result.startMuted);
+  }
+
+  @Test
+  public void adMessageCodec_adaptiveInlineBanner() {
+    AdSizeFactory adSizeFactory = mock(AdSizeFactory.class);
+    AdSize adSize = new AdSize(100, 101);
+    doReturn(adSize)
+        .when(adSizeFactory)
+        .getCurrentOrientationInlineAdaptiveBannerAdSize(any(Context.class), eq(100));
+
+    AdaptiveInlineBannerAdSize size = new AdaptiveInlineBannerAdSize(
+        adSizeFactory,
+        mock(Context.class),
+        100,
+        null,
+        null);
+    final ByteBuffer data = testCodec.encodeMessage(size);
+    final AdaptiveInlineBannerAdSize result =
+        (AdaptiveInlineBannerAdSize) testCodec.decodeMessage((ByteBuffer) data.position(0));
+
+    assertEquals(result.width, 100);
+    assertNull(result.maxHeight);
+    assertNull(result.orientation);
   }
 }
